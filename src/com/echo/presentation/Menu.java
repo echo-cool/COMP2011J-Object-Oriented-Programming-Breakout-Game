@@ -7,12 +7,12 @@ import java.awt.*;
 
 public class Menu extends JPanel {
     private static final long serialVersionUID = 1616386874546775416L;
-    private Rectangle Welcome_Rectangle = new Rectangle(Game.SCREEN_WIDTH / 3, Game.SCREEN_HEIGHT / 64, Game.SCREEN_WIDTH / 3, Game.SCREEN_HEIGHT / 3);
-    private Rectangle Author_Rectangle = new Rectangle(Game.SCREEN_WIDTH / 3, Game.SCREEN_HEIGHT / 8, Game.SCREEN_WIDTH / 3, Game.SCREEN_HEIGHT / 3);
-    private Rectangle startGame_Rectangle = new Rectangle(Game.SCREEN_WIDTH / 3, 2 * Game.SCREEN_HEIGHT / 8, Game.SCREEN_WIDTH / 3, Game.SCREEN_HEIGHT / 3);
-    private Rectangle highScores_Rectangle = new Rectangle(Game.SCREEN_WIDTH / 3, 3 * Game.SCREEN_HEIGHT / 8, Game.SCREEN_WIDTH / 3, Game.SCREEN_HEIGHT / 3);
-    private Rectangle help_Rectangle = new Rectangle(Game.SCREEN_WIDTH / 3, 4 * Game.SCREEN_HEIGHT / 8, Game.SCREEN_WIDTH / 3, Game.SCREEN_HEIGHT / 3);
-    private Rectangle exit_Rectangle = new Rectangle(Game.SCREEN_WIDTH / 3, 5 * Game.SCREEN_HEIGHT / 8, Game.SCREEN_WIDTH / 3, Game.SCREEN_HEIGHT / 3);
+    private final Rectangle Welcome_Rectangle = new Rectangle(Game.SCREEN_WIDTH / 3, Game.SCREEN_HEIGHT / 64, Game.SCREEN_WIDTH / 3, Game.SCREEN_HEIGHT / 3);
+    private final Rectangle Author_Rectangle = new Rectangle(Game.SCREEN_WIDTH / 3, Game.SCREEN_HEIGHT / 8, Game.SCREEN_WIDTH / 3, Game.SCREEN_HEIGHT / 3);
+    private final Rectangle startGame_Rectangle = new Rectangle(Game.SCREEN_WIDTH / 3, 2 * Game.SCREEN_HEIGHT / 8, Game.SCREEN_WIDTH / 3, Game.SCREEN_HEIGHT / 3);
+    private final Rectangle highScores_Rectangle = new Rectangle(Game.SCREEN_WIDTH / 3, 3 * Game.SCREEN_HEIGHT / 8, Game.SCREEN_WIDTH / 3, Game.SCREEN_HEIGHT / 3);
+    private final Rectangle help_Rectangle = new Rectangle(Game.SCREEN_WIDTH / 3, 4 * Game.SCREEN_HEIGHT / 8, Game.SCREEN_WIDTH / 3, Game.SCREEN_HEIGHT / 3);
+    private final Rectangle exit_Rectangle = new Rectangle(Game.SCREEN_WIDTH / 3, 5 * Game.SCREEN_HEIGHT / 8, Game.SCREEN_WIDTH / 3, Game.SCREEN_HEIGHT / 3);
 
     public void paintComponent(Graphics g) {
         g.setColor(Color.BLACK);

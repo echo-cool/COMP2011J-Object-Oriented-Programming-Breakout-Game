@@ -1,5 +1,8 @@
 package com.echo.presentation;
 
+import com.echo.model.Bonuses;
+import com.echo.model.Game;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -7,17 +10,15 @@ public class PlayerListener implements KeyListener {
     private boolean left;
     private boolean right;
     private boolean pause;
-    private boolean start;
     private boolean high;
     private boolean exit;
     private boolean menu;
     private boolean about;
     private boolean newGame;
+    private boolean start_again;
     @Override
     public void keyTyped(KeyEvent e) {
-        if (e.getExtendedKeyCode() == KeyEvent.VK_S || e.getKeyChar() == 'S'  || e.getKeyChar() == 's') {
-            start = true;
-        } else if (e.getExtendedKeyCode() == KeyEvent.VK_H || e.getKeyChar() == 'H'  || e.getKeyChar() == 'h') {
+        if (e.getExtendedKeyCode() == KeyEvent.VK_H || e.getKeyChar() == 'H'  || e.getKeyChar() == 'h') {
             high = true;
         } else if (e.getExtendedKeyCode() == KeyEvent.VK_X || e.getKeyChar() == 'X'  || e.getKeyChar() == 'x') {
             exit = true;
@@ -29,6 +30,9 @@ public class PlayerListener implements KeyListener {
             pause = true;
         }else if (e.getExtendedKeyCode() == KeyEvent.VK_A || e.getKeyChar() == 'A'  || e.getKeyChar() == 'a') {
             about = true;
+        }else if (e.getExtendedKeyCode() == KeyEvent.VK_SPACE){
+            start_again = true;
+            //Game.laser.setActivate(true);
         }
     }
 
@@ -94,7 +98,6 @@ public class PlayerListener implements KeyListener {
     public void reset() {
         left = false;
         right = false;
-        start = false;
         exit = false;
         menu = false;
         newGame = false;
@@ -115,6 +118,15 @@ public class PlayerListener implements KeyListener {
         }
         return false;
     }
+
+    public boolean isStart_again() {
+        if (start_again) {
+            start_again = false;
+            return true;
+        }
+        return false;
+    }
+
 
 
 }
