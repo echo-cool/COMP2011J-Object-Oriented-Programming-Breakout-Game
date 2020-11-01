@@ -5,60 +5,60 @@ import com.echo.presentation.PlayerListener;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Iterator;
+
 
 public class Game implements Runnable{
 
-    private boolean debug = false;
-
+    //private final boolean debug = false;
     //Game Variables
-    private PlayerListener playerListener;
-    private int playerLives = 1;
-    private final int TARGET_FPS = 30;
-    private final double GAME_HERTZ = 30.0;
-    private final double TARGET_TIME_BETWEEN_RENDERS = 1000000000 / TARGET_FPS;
-    private final double TIME_BETWEEN_UPDATES = 1000000000 / GAME_HERTZ;
-    private final int MAX_UPDATES_BEFORE_RENDER = 5;
+    private final PlayerListener playerListener;
+
     public int score;
     public boolean paused = true;
     public boolean gameOver = false;
-
-
+    public boolean win = false;
 
     // Game Area
-    private GameScreen gameScreen;
     public static final int SCREEN_WIDTH = 512;
     public static final int SCREEN_HEIGHT = 512;
     public static final int game_box_w=512;
     public static final int game_box_h=412;
-    private static final Rectangle SCREEN_BOUNDS = new Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    private double GAME_HERTZ = 30.0;
+    private int TARGET_FPS = 30;
+    private final Rectangle SCREEN_BOUNDS = new Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    private final GameScreen gameScreen;
+    private boolean start_again;
+    private int level = 1;
 
     // Bricks
-    public static int brick_per_row=10;
-    public static int brick_row=10;
-    public static final int brick_sep=4;
-    private static ArrayList<Brick> bricks;
+    private static final int brick_per_row=10;
+    private static final int brick_row=10;
+    private static final int brick_sep=4;
+    private ArrayList<Brick> bricks;
 
     // Ball
-    private static ArrayList<Ball> playerBalls = new ArrayList<>();
+    private ArrayList<Ball> playerBalls = new ArrayList<>();
     //private Ball ball;
 
     // Paddle
     Paddle paddle;
+    private Laser laser;
+    //public static Laser laser;
 
     // Player
-    Player player;
-
+    private Player player;
+    private int lives = 3;
 
 
     public Game(PlayerListener playerListener, GameScreen gameScreen) {
-        this.paddle = new Paddle();
-        this.playerBalls.add(new Ball());
-        this.playerBalls.add(new Ball());
-        this.bricks = Brick.initBricks(brick_row,brick_per_row);
+        this.paddle = new Paddle(this);
+        this.playerBalls.add(new Ball(this));
+        //this.playerBalls.add(new Ball());
+        this.bricks = Brick.initBricks(brick_row, brick_per_row, level);
         this.playerListener = playerListener;
         this.gameScreen = gameScreen;
         this.player = new Player(playerListener, paddle);
+        this.laser = new Laser(this);
         gameScreen.addGame(this);
 
     }
@@ -66,24 +66,32 @@ public class Game implements Runnable{
     public void run(){
         double now = System.nanoTime();
         double lastUpdateTime = System.nanoTime();
-        double lastRenderTime = System.nanoTime();
-        while (playerBalls.size() > 0) {
+        System.nanoTime();
+        double lastRenderTime;
+        int allUpdateCount = 0;
+        while (lives > 0 && !win) {
             if (!paused) {
                 int updateCount = 0;
+                double TIME_BETWEEN_UPDATES = 1000000000 / GAME_HERTZ;
+                double TARGET_TIME_BETWEEN_RENDERS = 1000000000.0 / TARGET_FPS;
+                int MAX_UPDATES_BEFORE_RENDER = 1;
                 while (now - lastUpdateTime > TIME_BETWEEN_UPDATES && updateCount < MAX_UPDATES_BEFORE_RENDER) {
                     updateGame();
                     lastUpdateTime += TIME_BETWEEN_UPDATES;
                     updateCount++;
+                    allUpdateCount++;
+                    if(allUpdateCount % 30 == 0){
+                        GAME_HERTZ += 2;
+                        TARGET_FPS += 2;
+                    }
                 }
-
                 gameScreen.paintImmediately(SCREEN_BOUNDS);
                 lastRenderTime = now;
-
+                //private final int playerLives = 1;
                 while (now - lastRenderTime < TARGET_TIME_BETWEEN_RENDERS) {
-
                     try {
                         Thread.sleep(1);
-                    } catch (Exception e) {
+                    } catch (Exception ignored) {
                     }
 
                     now = System.nanoTime();
@@ -99,7 +107,7 @@ public class Game implements Runnable{
                 }
                 try {
                     Thread.sleep(5);
-                } catch (InterruptedException e) {
+                } catch (InterruptedException ignored) {
                 }
             }
         }
@@ -112,26 +120,59 @@ public class Game implements Runnable{
 
     public void updateGame() {
         player.move();
-        for(Ball ball: playerBalls)
-            ball.moveAndBounce(paddle, this);
-        if(!debug)
-            for(Ball ball: playerBalls)
-                for(Brick brick:bricks){
-                    brick.checkHit(ball, this);
-                }
-        Iterator<Ball> iter = playerBalls.iterator();
-        while(iter.hasNext()){
-            Ball ball = iter.next();
-            if(!ball.alive)
-                iter.remove();
+        ArrayList<Ball> tmp = new ArrayList<>(getPlayerBalls());
+        if(playerListener.isStart_again()) {
+            paddle.setStickyPaddle(false);
         }
+        if(!paddle.isStickyPaddle()) {
+            this.start_again = false;
+            for (Ball ball : playerBalls)
+                ball.setStop(false);
+        }
+        for(Ball ball: playerBalls)
+            if(ball.moveAndBounce(paddle, this) && paddle.isStickyPaddle()){
+                //this.paused = true;
+                ball.setStop(true);
+                ball.setStickied(true);
+                this.start_again = true;
+                //paddle.setStickyPaddle(false);
+            }
+        for(Ball ball: tmp)
+            for(Brick brick:bricks){
+                brick.checkHit(ball, this);
+                brick.checkHit(laser, this);
+            }
+        for(Brick brick: bricks)
+            if(brick.getBonuses() != null){
+                brick.getBonuses().setGame(this);
+                if(brick.getBonuses().isShow()) {
+                    brick.getBonuses().move();
+                    brick.getBonuses().checkHit(paddle.getX(),paddle.getY(),Paddle.paddle_width,Paddle.paddle_height);
+                }
+            }
+        playerBalls.removeIf(ball -> !ball.isAlive());
         if(playerBalls.size() <= 0){
-            gameOver = true;
+            if(--this.lives > 0){
+                this.playerBalls.add(new Ball(this));
+                this.GAME_HERTZ = 30.0;
+                this.TARGET_FPS = 30;
+            }
+            else{
+                gameOver = true;
+            }
+
             //paused = true;
         }
+        if(Brick.All_die(bricks)){
+            if(this.level < 3){
+                this.bricks = Brick.initBricks(brick_row, brick_per_row, ++level);
+            }
+            else{
+                win = true;
+            }
+
+        }
     }
-
-
 
     public int getScore() {
         return score;
@@ -156,5 +197,33 @@ public class Game implements Runnable{
 
     public ArrayList<Brick> getBricks() {
         return bricks;
+    }
+
+    public Laser getLaser() {
+        return laser;
+    }
+
+    public static int getBrick_sep() {
+        return brick_sep;
+    }
+
+    public boolean isStart_again() {
+        return start_again;
+    }
+
+    public int getLives() {
+        return lives;
+    }
+
+    public void setLives(int lives) {
+        this.lives = lives;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 }

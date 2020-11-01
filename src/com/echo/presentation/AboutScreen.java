@@ -1,21 +1,15 @@
 package com.echo.presentation;
 
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-
-import javax.swing.JPanel;
-
 import com.echo.model.Game;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class AboutScreen extends JPanel {
     private static final long serialVersionUID = -1264717778772722118L;
     private boolean menu = false;
-    private PlayerListener listener;
+    private final PlayerListener listener;
 
     public AboutScreen(PlayerListener pl) {
         listener = pl;
@@ -45,7 +39,7 @@ public class AboutScreen extends JPanel {
             }
             try {
                 Thread.sleep(5);
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
             }
         }
         listener.reset();
