@@ -1,6 +1,7 @@
 package com.echo.model;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class ScoreKeeper {
 	protected Score[] scores;
@@ -13,7 +14,11 @@ public class ScoreKeeper {
 	}
 
 	private void sortScores() {
-		Arrays.sort(scores, (a, b) -> Integer.compare(b.value, a.value));
+		Arrays.sort(scores, new Comparator<Score>() {
+			public int compare(Score a, Score b) {
+				return Integer.compare(b.value, a.value);
+			}
+		});
 	}
 
 	public int getLowestScore() {
@@ -23,13 +28,15 @@ public class ScoreKeeper {
 
 	public Score[] getScores() {
 		Score[] scs = new Score[10];
-		System.arraycopy(scores, 0, scs, 0, scs.length);
+		for (int i = 0; i < scs.length; i++) {
+			scs[i] = scores[i];
+		}
 		return scs;
 	}
 
-	public static class Score {
-		private final String name;
-		private final int value;
+	public class Score {
+		private String name;
+		private int value;
 
 		public Score(String n, int s) {
 			this.name = n;

@@ -12,42 +12,50 @@ import com.echo.model.Game;
 import com.echo.model.ScoreKeeper;
 
 public class MainMenu {
-    private final PlayerListener playerListener;
+    @SuppressWarnings("unused")
+    private static final long serialVersionUID = -207820671704916628L;
+    private JFrame window;
+    private PlayerListener playerListener;
     private boolean exit;
-    private final GameScreen gameScreen;
-    private final JPanel main;
-    private final ScoreScreen scoreScreen;
-    private final CardLayout cardLayout;
-    private final ScoreKeeper scoreKeeper;
-    private final AboutScreen aboutScreen;
+    private Game game;
+    private GameScreen gameScreen;
+    private Menu menu;
+    private JPanel main;
+    private ScoreScreen scoreScreen;
+    private CardLayout cardLayout;
+    private ScoreKeeper scoreKeeper;
+    private AboutScreen aboutScreen;
 
     public MainMenu(JFrame win, PlayerListener lis) {
+        this.window = win;
         this.playerListener = lis;
         cardLayout = new CardLayout();
         main = new JPanel(cardLayout);
-        Menu menu = new Menu();
+        menu = new Menu();
         aboutScreen = new AboutScreen(playerListener);
         scoreKeeper = new PersistentScoreKeeper();
         scoreScreen = new ScoreScreen(scoreKeeper, playerListener);
-        gameScreen = new GameScreen();
+        gameScreen = new GameScreen(playerListener);
         main.add(menu, "Main Menu");
         main.add(gameScreen, "Game Screen");
         main.add(scoreScreen, "High Scores");
         main.add(aboutScreen, "About");
-        win.getContentPane().add(main);
+        window.getContentPane().add(main);
     }
 
     public void run() {
-        new Thread(() -> {
-            try {
-                Thread.sleep(Long.MAX_VALUE);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        new Thread() {
+            public void run() {
+                try {
+                    Thread.sleep(Long.MAX_VALUE);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-        }).start();
+        }.start();
         while (!exit) {
             if (playerListener.isNew()) {
-                Game game = new Game(playerListener, gameScreen);
+                game = new Game(playerListener, gameScreen);
                 cardLayout.show(main, "Game Screen");
                 game.run();
                 int s = game.getScore();

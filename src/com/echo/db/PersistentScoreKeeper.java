@@ -35,9 +35,10 @@ public class PersistentScoreKeeper extends ScoreKeeper {
 
     public void saveScores() {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter("scores.txt"))) {
-            for (Score score : scores) {
-                bw.write(score.getScore() + " " + score.getName() + "\n");
+            for(int i = 0; i < scores.length; i++) {
+                bw.write(scores[i].getScore() + " " + scores[i].getName()+"\n");
             }
+            bw.close();
         } catch (IOException e) {
             System.err.println("Error writing score file");
         }

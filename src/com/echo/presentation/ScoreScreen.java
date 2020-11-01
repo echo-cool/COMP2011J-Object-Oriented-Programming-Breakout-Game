@@ -9,9 +9,9 @@ import java.awt.*;
 
 public class ScoreScreen extends JPanel {
 	private static final long serialVersionUID = 1616386874546775416L;
-	private final ScoreKeeper scoreKeeper;
+	private ScoreKeeper scoreKeeper;
 	private boolean menu = false;
-	private final PlayerListener listener;
+	private PlayerListener listener;
 
 	public ScoreScreen(ScoreKeeper sc, PlayerListener l) {
 		this.scoreKeeper = sc;
@@ -42,7 +42,7 @@ public class ScoreScreen extends JPanel {
 			}
 			try {
 				Thread.sleep(5);
-			} catch (InterruptedException ignored) {
+			} catch (InterruptedException e) {
 			}
 		}
 		listener.reset();
