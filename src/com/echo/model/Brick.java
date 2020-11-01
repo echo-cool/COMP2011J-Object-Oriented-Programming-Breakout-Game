@@ -26,8 +26,8 @@ public class Brick {
         if(level == 1) {
             for (int i = 0; i < brick_row; i++) {
                 for (int j = 0; j < brick_per_row; j++) {
-                    int x = j * brick_width + 4 * (j + 1);
-                    int y = i * brick_height + 4 * i;
+                    int x = j * brick_width + Game.getBrick_sep() * (j + 1);
+                    int y = i * brick_height + Game.getBrick_sep() * i;
                     Brick brick = new Brick(x, y + 30, brick_height, brick_width);
                     int a = (int) (Math.random() * 30);
                     switch (a) {
@@ -59,8 +59,8 @@ public class Brick {
         else if(level == 2){
             for (int i = 0; i < brick_row; i++) {
                 for (int j = 0; j < brick_per_row; j++) {
-                    int x = j * brick_width + 4 * (j + 1);
-                    int y = i * brick_height + 4 * i;
+                    int x = j * brick_width + Game.getBrick_sep() * (j + 1);
+                    int y = i * brick_height + Game.getBrick_sep() * i;
                     if(i % 2 == 0 || j % 2 == 0)
                         continue;
                     Brick brick = new Brick(x, y + 30, brick_height, brick_width);
@@ -94,8 +94,8 @@ public class Brick {
         else if(level == 3){
             for (int i = 3; i < brick_row-3; i++) {
                 for (int j = 3; j < brick_per_row-3; j++) {
-                    int x = j * brick_width + 4 * (j + 1);
-                    int y = i * brick_height + 4 * i;
+                    int x = j * brick_width + Game.getBrick_sep() * (j + 1);
+                    int y = i * brick_height + Game.getBrick_sep() * i;
                     Brick brick = new Brick(x, y + 30, brick_height, brick_width);
                     int a = (int) (Math.random() * 30);
                     switch (a) {
@@ -172,6 +172,8 @@ public class Brick {
         if(Alive){
             g2.setColor(color);
             g2.fillRect(x,y,BRICK_WIDTH,BRICK_HEIGHT);
+            //g2.setColor(Color.CYAN);
+            //g2.drawRect(x,y,BRICK_WIDTH,BRICK_HEIGHT);
         }
     }
     public void setAlive(boolean alive) { this.Alive = alive; }
