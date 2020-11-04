@@ -39,7 +39,7 @@ public class Ball {
         //Image img = new ImageIcon("imgs/ball.png").getImage();
         //g.drawImage(img,this.x,this.y,2*ball_r,2*ball_r,null);
     }
-    public boolean moveAndBounce(Paddle paddle, Game game){
+    public boolean moveBounce(Paddle paddle, Game game){
         if(game.paused || stop){
             if(vx != 0)
                 tmp_vx = vx;

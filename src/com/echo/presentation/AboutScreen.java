@@ -25,8 +25,8 @@ public class AboutScreen extends JPanel {
         g.drawString("left arrow", 4 * Game.SCREEN_WIDTH / 6, 96 + 0 * 32);
         g.drawString("Move Right", 1 * Game.SCREEN_WIDTH / 6, 96 + 1 * 32);
         g.drawString("right arrow", 4 * Game.SCREEN_WIDTH / 6, 96 + 1 * 32);
-        //g.drawString("Fire", 1 * Game.SCREEN_WIDTH / 6, 96 + 2 * 32);
-        //g.drawString("space bar", 4 * Game.SCREEN_WIDTH / 6, 96 + 2 * 32);
+        g.drawString("Restart(When Stickied)", 1 * Game.SCREEN_WIDTH / 6, 96 + 2 * 32);
+        g.drawString("space bar", 4 * Game.SCREEN_WIDTH / 6, 96 + 2 * 32);
         g.drawString("Play/Pause", 1 * Game.SCREEN_WIDTH / 6, 96 + 3 * 32);
         g.drawString("p", 4 * Game.SCREEN_WIDTH / 6, 96 + 3 * 32);
         drawer.drawString(g, "Press 'M' to return to the Main Menu", new Rectangle(0, 416, Game.SCREEN_WIDTH, 96), 24);

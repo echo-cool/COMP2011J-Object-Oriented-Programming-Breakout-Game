@@ -16,7 +16,7 @@ public class TestReactant {
         g2d.setColor(Color.RED);
         // g2d.setStroke(new BasicStroke(3));
         BasicStroke stroke = new BasicStroke(2.5f, BasicStroke.CAP_BUTT,
-                BasicStroke.JOIN_ROUND, 3.5f, new float[] { 10, 5 }, 0f);
+                BasicStroke.JOIN_ROUND, 3.5f, new float[]{10, 5}, 0f);
         g2d.setStroke(stroke);
         g2d.clearRect(0, 0, 120, 60);
         g2d.drawRect(0, 0, 120, 60);

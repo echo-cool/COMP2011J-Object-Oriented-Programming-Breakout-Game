@@ -23,9 +23,9 @@ public class Game implements Runnable{
     public static final int SCREEN_HEIGHT = 512;
     public static final int game_box_w=512;
     public static final int game_box_h=412;
-    private double GAME_HERTZ = 30.0;
-    private int TARGET_FPS = 30;
-    private final Rectangle SCREEN_BOUNDS = new Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    private double gameUpdateRate = 30.0;
+    private int FPS = 30;
+    private final Rectangle SCREEN_BOUND = new Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     private final GameScreen gameScreen;
     private boolean start_again;
     private int level = 1;
@@ -64,44 +64,43 @@ public class Game implements Runnable{
     }
 
     public void run(){
-        double now = System.nanoTime();
+        double nowTime = System.nanoTime();
         double lastUpdateTime = System.nanoTime();
-        System.nanoTime();
         double lastRenderTime;
         int allUpdateCount = 0;
         while (lives > 0 && !win) {
             if (!paused) {
                 int updateCount = 0;
-                double TIME_BETWEEN_UPDATES = 1000000000 / GAME_HERTZ;
-                double TARGET_TIME_BETWEEN_RENDERS = 1000000000.0 / TARGET_FPS;
+                double TIME_BETWEEN_UPDATES = 1000000000 / gameUpdateRate;
+                double TARGET_TIME_BETWEEN_RENDERS = 1000000000.0 / FPS;
                 int MAX_UPDATES_BEFORE_RENDER = 1;
-                while (now - lastUpdateTime > TIME_BETWEEN_UPDATES && updateCount < MAX_UPDATES_BEFORE_RENDER) {
+                while (nowTime - lastUpdateTime > TIME_BETWEEN_UPDATES && updateCount < MAX_UPDATES_BEFORE_RENDER) {
                     updateGame();
                     lastUpdateTime += TIME_BETWEEN_UPDATES;
                     updateCount++;
                     allUpdateCount++;
                     if(allUpdateCount % 30 == 0){
-                        GAME_HERTZ += 2;
-                        TARGET_FPS += 2;
+                        gameUpdateRate += 2;
+                        FPS += 2;
                     }
                 }
-                gameScreen.paintImmediately(SCREEN_BOUNDS);
-                lastRenderTime = now;
+                gameScreen.paintImmediately(SCREEN_BOUND);
+                lastRenderTime = nowTime;
                 //private final int playerLives = 1;
-                while (now - lastRenderTime < TARGET_TIME_BETWEEN_RENDERS) {
+                while (nowTime - lastRenderTime < TARGET_TIME_BETWEEN_RENDERS) {
                     try {
                         Thread.sleep(1);
                     } catch (Exception ignored) {
                     }
 
-                    now = System.nanoTime();
+                    nowTime = System.nanoTime();
                 }
                 if (playerListener.isPlayPause()) {
                     paused = true;
                 }
             } else {
                 lastUpdateTime = System.nanoTime();
-                gameScreen.paintImmediately(SCREEN_BOUNDS);
+                gameScreen.paintImmediately(SCREEN_BOUND);
                 if (playerListener.isPlayPause()) {
                     paused = false;
                 }
@@ -130,7 +129,7 @@ public class Game implements Runnable{
                 ball.setStop(false);
         }
         for(Ball ball: playerBalls)
-            if(ball.moveAndBounce(paddle, this) && paddle.isStickyPaddle()){
+            if(ball.moveBounce(paddle, this) && paddle.isStickyPaddle()){
                 //this.paused = true;
                 ball.setStop(true);
                 ball.setStickied(true);
@@ -154,16 +153,15 @@ public class Game implements Runnable{
         if(playerBalls.size() <= 0){
             if(--this.lives > 0){
                 this.playerBalls.add(new Ball(this));
-                this.GAME_HERTZ = 30.0;
-                this.TARGET_FPS = 30;
+                this.gameUpdateRate = 30.0;
+                this.FPS = 30;
             }
             else{
                 gameOver = true;
             }
-
             //paused = true;
         }
-        if(Brick.All_die(bricks)){
+        if(Brick.allClear(bricks)){
             if(this.level < 3){
                 this.bricks = Brick.initBricks(brick_row, brick_per_row, ++level);
             }

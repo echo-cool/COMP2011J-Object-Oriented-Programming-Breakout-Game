@@ -157,7 +157,7 @@ public class Brick {
         }
     }
 
-    public static boolean All_die(ArrayList<Brick> bricks){
+    public static boolean allClear(ArrayList<Brick> bricks){
         boolean flag = false;
         for(Brick brick: bricks){
             if(brick.isAlive()){
