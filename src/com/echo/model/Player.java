@@ -16,8 +16,5 @@ public class Player {
         } else if (playerListener.isRight()) {
             paddle.moveRight();
         }
-
-
-
     }
 }

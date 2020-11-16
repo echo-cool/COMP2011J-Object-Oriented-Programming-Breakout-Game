@@ -9,16 +9,19 @@ public class Ball {
     private int y=200;
     private int vx=0;
     private int vy=5;
-    private int tmp_vx=0;
-    private int tmp_vy=5;
+    private int target_vx =0;
+    private int target_vy =5;
     private boolean alive = true;
     private boolean stop = false;
     private boolean stickied = false;
-    private Game game;
+    private int BounceCount = 0;
+    private boolean paddleCollided = false;
+    private final Game game;
+
 
     public Ball(Game game) {
         this.game = game;
-        this.x = game.getPaddle().getX()+(game.getPaddle().paddle_width)/2;
+        this.x = game.getPaddle().getX()+(Paddle.paddle_width)/2;
     }
 
     public Ball(int x, int y, int vx, int vy, Game game) {
@@ -26,7 +29,7 @@ public class Ball {
         this.y = y;
         this.vx = vx;
         this.vy = vy;
-        this.tmp_vy = vy;
+        this.target_vy = vy;
         this.game = game;
 
     }
@@ -40,53 +43,49 @@ public class Ball {
         //g.drawImage(img,this.x,this.y,2*ball_r,2*ball_r,null);
     }
     public boolean moveBounce(Paddle paddle, Game game){
+        BounceCount = 0;
         if(game.paused || stop){
             if(vx != 0)
-                tmp_vx = vx;
+                target_vx = vx;
             if(vy != 0)
-                tmp_vy = vy;
+                target_vy = vy;
             vx = 0;
             vy = 0;
         }
         else{
-            if(tmp_vx != 0)
-                vx = tmp_vx;
-            if(tmp_vy != 0)
-                vy = tmp_vy;
+            if(target_vx != 0)
+                vx = target_vx;
+            if(target_vy != 0)
+                vy = target_vy;
             if(vy == 0)
                 vy = 5;
-            tmp_vx = 0;
-            tmp_vy = 0;
+            target_vx = 0;
+            target_vy = 0;
         }
         x+=vx;
         y+=vy;
-        //Left Wall
         if(x<0) {
             x = 0;
             BounceX();
         }
-        //Right Wall
         else if(x+ballRadius*2>Game.game_box_w){
             x=Game.game_box_w-ballRadius*2;
             BounceX();
         }
-        //Top Wall
         else if(y<=25){
             y=25;
             BounceY();
-            //vx=(int)(Math.random()*5-5);
         }
-        //Drop
         else if(y+ballRadius*2>Game.SCREEN_HEIGHT){
             x=(Game.game_box_w)/2;
             y=Game.game_box_h-Paddle.paddle_to_button-Paddle.paddle_height*2;
             vx = 0;
             vy = 0;
             alive = false;
-            //Game.paused = true;
+            //Game.paused = true;z
         }
         if(this.collide(paddle.getX(),paddle.getY(),Paddle.paddle_width,Paddle.paddle_height)){
-            if(this.x+ 2 * ballRadius > paddle.getX() && this.x < paddle.getX()+Paddle.paddle_width)
+            if(this.x+ 2 * ballRadius > paddle.getX() && this.x < paddle.getX()+Paddle.paddle_width && !paddleCollided)
                 this.BounceY();
             else
                 this.BounceX();
@@ -96,7 +95,11 @@ public class Ball {
                 else
                     vx=(int)(Math.random()*5);
             }
+            paddleCollided = true;
             return true;
+        }
+        else{
+            paddleCollided = false;
         }
         return false;
     }
@@ -105,7 +108,14 @@ public class Ball {
         vx=-vx;
     }
     public void BounceY(){
-        vy=-vy;
+        if(BounceCount <= 0) {
+            vy = -vy;
+            BounceCount++;
+        }
+        else{
+            y += vy*2;
+            //System.out.println("sdfassdfadfsafda");
+        }
     }
 
     public boolean collide(int object_x,int object_y,int object_width,int object_height){
@@ -116,10 +126,6 @@ public class Ball {
 //            return true;
 //        }
 //        return false;
-    }
-    public void increaseSpeed(){
-        this.tmp_vy = vx*2;
-        this.tmp_vy = vy*2;
     }
 
 

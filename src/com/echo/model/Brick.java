@@ -48,7 +48,7 @@ public class Brick {
                             brick.bonuses = new Bonuses(4, x, y);
                             break;
                         default:
-                            brick.setColor(Color.RED);
+                            brick.setColor(Color.GRAY);
                             break;
 
                     }
@@ -124,24 +124,80 @@ public class Brick {
                 }
             }
         }
+        else if(level == 4){
+            for (int i = 0; i < brick_row; i++) {
+                for (int j = i; j < brick_per_row; j++) {
+                    int x = j * brick_width + Game.getBrick_sep() * (j + 1);
+                    int y = i * brick_height + Game.getBrick_sep() * i;
+                    Brick brick = new Brick(x, y + 30, brick_height, brick_width);
+                    int a = (int) (Math.random() * 30);
+                    switch (a) {
+                        case 1:
+                            brick.setColor(Color.GREEN);
+                            brick.bonuses = new Bonuses(1, x, y);
+                            break;
+                        case 2:
+                            brick.setColor(Color.BLUE);
+                            brick.bonuses = new Bonuses(2, x, y);
+                            break;
+                        case 3:
+                            brick.setColor(Color.ORANGE);
+                            brick.bonuses = new Bonuses(3, x, y);
+                            break;
+                        case 4:
+                            brick.setColor(Color.CYAN);
+                            brick.bonuses = new Bonuses(4, x, y);
+                            break;
+                        default:
+                            brick.setColor(Color.RED);
+                            break;
+
+                    }
+                    bricks.add(brick);
+                }
+            }
+        }
+        else if(level == 5){
+            for (int i = 0; i < brick_row; i++) {
+                for (int j = i; j < brick_per_row-i; j++) {
+                    int x = j * brick_width + Game.getBrick_sep() * (j + 1);
+                    int y = i * brick_height + Game.getBrick_sep() * i;
+                    Brick brick = new Brick(x, y + 30, brick_height, brick_width);
+                    int a = (int) (Math.random() * 30);
+                    switch (a) {
+                        case 1:
+                            brick.setColor(Color.GREEN);
+                            brick.bonuses = new Bonuses(1, x, y);
+                            break;
+                        case 2:
+                            brick.setColor(Color.BLUE);
+                            brick.bonuses = new Bonuses(2, x, y);
+                            break;
+                        case 3:
+                            brick.setColor(Color.ORANGE);
+                            brick.bonuses = new Bonuses(3, x, y);
+                            break;
+                        case 4:
+                            brick.setColor(Color.CYAN);
+                            brick.bonuses = new Bonuses(4, x, y);
+                            break;
+                        default:
+                            brick.setColor(Color.RED);
+                            break;
+
+                    }
+                    bricks.add(brick);
+                }
+            }
+        }
         return bricks;
 
     }
     public void checkHit(Ball ball, Game game){
             if(this.isAlive()&&ball.collide(this.getX(),this.getY(),BRICK_WIDTH,BRICK_HEIGHT)){
                 ball.BounceY();
-                switch (this.getColor_name()){
-                    case "java.awt.Color[r=0,g=255,b=255]":
-                    case "java.awt.Color[r=0,g=0,b=255]":
-                    case "java.awt.Color[r=255,g=0,b=0]":
-                    case "java.awt.Color[r=0,g=255,b=0]":
-                    case "java.awt.Color[r=255,g=200,b=0]":
-                    case "java.awt.Color[r=255,g=255,b=0]": {
-                        this.setAlive(false);
-                        game.score+=1;
-                        break;
-                    }
-                }
+                this.setAlive(false);
+                game.score+=1;
                 if(bonuses != null) {
                     bonuses.setShow(true);
                 }

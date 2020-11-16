@@ -6,7 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Menu extends JPanel {
-    private static final long serialVersionUID = 1616386874546775416L;
     private final Rectangle Welcome_Rectangle = new Rectangle(Game.SCREEN_WIDTH / 3, Game.SCREEN_HEIGHT / 64, Game.SCREEN_WIDTH / 3, Game.SCREEN_HEIGHT / 3);
     private final Rectangle Author_Rectangle = new Rectangle(Game.SCREEN_WIDTH / 3, Game.SCREEN_HEIGHT / 8, Game.SCREEN_WIDTH / 3, Game.SCREEN_HEIGHT / 3);
     private final Rectangle startGame_Rectangle = new Rectangle(Game.SCREEN_WIDTH / 3, 2 * Game.SCREEN_HEIGHT / 8, Game.SCREEN_WIDTH / 3, Game.SCREEN_HEIGHT / 3);

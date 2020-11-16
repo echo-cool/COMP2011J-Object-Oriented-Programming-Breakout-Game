@@ -23,7 +23,6 @@ public class Game implements Runnable{
     public static final int SCREEN_HEIGHT = 512;
     public static final int game_box_w=512;
     public static final int game_box_h=412;
-    private double gameUpdateRate = 30.0;
     private int FPS = 30;
     private final Rectangle SCREEN_BOUND = new Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     private final GameScreen gameScreen;
@@ -37,16 +36,16 @@ public class Game implements Runnable{
     private ArrayList<Brick> bricks;
 
     // Ball
-    private ArrayList<Ball> playerBalls = new ArrayList<>();
+    private final ArrayList<Ball> playerBalls = new ArrayList<>();
     //private Ball ball;
 
     // Paddle
     Paddle paddle;
-    private Laser laser;
+    private final Laser laser;
     //public static Laser laser;
 
     // Player
-    private Player player;
+    private final Player player;
     private int lives = 3;
 
 
@@ -65,29 +64,24 @@ public class Game implements Runnable{
 
     public void run(){
         double nowTime = System.nanoTime();
-        double lastUpdateTime = System.nanoTime();
+        //double lastUpdateTime = System.nanoTime();
         double lastRenderTime;
         int allUpdateCount = 0;
         while (lives > 0 && !win) {
             if (!paused) {
-                int updateCount = 0;
-                double TIME_BETWEEN_UPDATES = 1000000000 / gameUpdateRate;
-                double TARGET_TIME_BETWEEN_RENDERS = 1000000000.0 / FPS;
-                int MAX_UPDATES_BEFORE_RENDER = 1;
-                while (nowTime - lastUpdateTime > TIME_BETWEEN_UPDATES && updateCount < MAX_UPDATES_BEFORE_RENDER) {
-                    updateGame();
-                    lastUpdateTime += TIME_BETWEEN_UPDATES;
-                    updateCount++;
-                    allUpdateCount++;
-                    if(allUpdateCount % 30 == 0){
-                        gameUpdateRate += 2;
-                        FPS += 2;
-                    }
+                double TIME_BETWEEN_RENDERS = 1000000000.0 / FPS;
+                updateGame();
+                allUpdateCount++;
+                if(allUpdateCount % 30 == 0){
+                    FPS += 1;
                 }
                 gameScreen.paintImmediately(SCREEN_BOUND);
                 lastRenderTime = nowTime;
                 //private final int playerLives = 1;
-                while (nowTime - lastRenderTime < TARGET_TIME_BETWEEN_RENDERS) {
+                if (playerListener.isPlayPause()) {
+                    paused = true;
+                }
+                while (nowTime - lastRenderTime < TIME_BETWEEN_RENDERS) {
                     try {
                         Thread.sleep(1);
                     } catch (Exception ignored) {
@@ -95,11 +89,8 @@ public class Game implements Runnable{
 
                     nowTime = System.nanoTime();
                 }
-                if (playerListener.isPlayPause()) {
-                    paused = true;
-                }
-            } else {
-                lastUpdateTime = System.nanoTime();
+            }
+            else {
                 gameScreen.paintImmediately(SCREEN_BOUND);
                 if (playerListener.isPlayPause()) {
                     paused = false;
@@ -128,19 +119,6 @@ public class Game implements Runnable{
             for (Ball ball : playerBalls)
                 ball.setStop(false);
         }
-        for(Ball ball: playerBalls)
-            if(ball.moveBounce(paddle, this) && paddle.isStickyPaddle()){
-                //this.paused = true;
-                ball.setStop(true);
-                ball.setStickied(true);
-                this.start_again = true;
-                //paddle.setStickyPaddle(false);
-            }
-        for(Ball ball: tmp)
-            for(Brick brick:bricks){
-                brick.checkHit(ball, this);
-                brick.checkHit(laser, this);
-            }
         for(Brick brick: bricks)
             if(brick.getBonuses() != null){
                 brick.getBonuses().setGame(this);
@@ -150,10 +128,22 @@ public class Game implements Runnable{
                 }
             }
         playerBalls.removeIf(ball -> !ball.isAlive());
+        for(Ball ball: tmp)
+            for(Brick brick:bricks){
+                brick.checkHit(ball, this);
+                brick.checkHit(laser, this);
+            }
+        for(Ball ball: playerBalls)
+            if(ball.moveBounce(paddle, this) && paddle.isStickyPaddle()){
+                //this.paused = true;
+                ball.setStop(true);
+                ball.setStickied(true);
+                this.start_again = true;
+                //paddle.setStickyPaddle(false);
+            }
         if(playerBalls.size() <= 0){
             if(--this.lives > 0){
                 this.playerBalls.add(new Ball(this));
-                this.gameUpdateRate = 30.0;
                 this.FPS = 30;
             }
             else{
@@ -162,7 +152,7 @@ public class Game implements Runnable{
             //paused = true;
         }
         if(Brick.allClear(bricks)){
-            if(this.level < 3){
+            if(this.level < 5){
                 this.bricks = Brick.initBricks(brick_row, brick_per_row, ++level);
             }
             else{
@@ -221,7 +211,4 @@ public class Game implements Runnable{
         return level;
     }
 
-    public void setLevel(int level) {
-        this.level = level;
-    }
 }

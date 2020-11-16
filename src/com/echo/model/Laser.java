@@ -23,14 +23,24 @@ public class Laser {
             Graphics2D g2 = (Graphics2D) g;
             g2.setColor(Color.magenta);
             g2.fillRect(x, y, width, height);
-            if (height < Game.SCREEN_HEIGHT)
-                x = game.getPaddle().getX()+ Paddle.getPaddle_width()/3;
+            Point top = new Point(x+(width)/2,y-10);
+            Point left = new Point(x,y);
+            Point right = new Point(x+width,y);
+            int[] xPoints = new int[]{top.x, left.x, right.x};
+            int[] yPoints = new int[]{top.y,left.y,right.y};
+            g2.fillPolygon(new Polygon(xPoints,yPoints,3));
+//            if (height < Game.SCREEN_HEIGHT)
+//                x = game.getPaddle().getX()+ Paddle.getPaddle_width()/3;
             int speed = 20;
             y -= speed;
+            if(height < 120)
                 height += speed;
         }
-        if(height >= Game.SCREEN_HEIGHT){
+        if(y < 0 && activate){
+            //System.out.println("sdfsadf");
             activate = false;
+            y = game.getPaddle().getY();
+            height = 0;
         }
         if(!activate && height > 0){
             height = 0;
@@ -44,6 +54,7 @@ public class Laser {
 
     public void setActivate(boolean activate) {
         this.activate = activate;
+        this.x = game.getPaddle().getX()+ Paddle.getPaddle_width()/3;
     }
 
 }

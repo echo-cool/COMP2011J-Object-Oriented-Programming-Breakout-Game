@@ -7,75 +7,67 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import com.echo.db.PersistentScoreKeeper;
+import com.echo.db.HighScoreLoaderAndSaver;
 import com.echo.model.Game;
-import com.echo.model.ScoreKeeper;
+import com.echo.model.HighScore;
 
 public class MainMenu {
-    private final PlayerListener playerListener;
+    private final PlayerListener pListener;
     private boolean exit;
     private final GameScreen gameScreen;
-    private final JPanel main;
-    private final ScoreScreen scoreScreen;
-    private final CardLayout cardLayout;
-    private final ScoreKeeper scoreKeeper;
-    private final AboutScreen aboutScreen;
+    private final JPanel jPanel;
+    private final HighScoreScreen highScoreScreen;
+    private final CardLayout layout;
+    private final HighScore highScoreKeeper;
+    private final HelpScreen helpScreen;
 
     public MainMenu(JFrame win, PlayerListener lis) {
-        this.playerListener = lis;
-        cardLayout = new CardLayout();
-        main = new JPanel(cardLayout);
+        this.pListener = lis;
+        layout = new CardLayout();
+        jPanel = new JPanel(layout);
         Menu menu = new Menu();
-        aboutScreen = new AboutScreen(playerListener);
-        scoreKeeper = new PersistentScoreKeeper();
-        scoreScreen = new ScoreScreen(scoreKeeper, playerListener);
+        helpScreen = new HelpScreen(pListener);
+        highScoreKeeper = new HighScoreLoaderAndSaver();
+        highScoreScreen = new HighScoreScreen(highScoreKeeper, pListener);
         gameScreen = new GameScreen();
-        main.add(menu, "Main Menu");
-        main.add(gameScreen, "Game Screen");
-        main.add(scoreScreen, "High Scores");
-        main.add(aboutScreen, "About");
-        win.getContentPane().add(main);
+        jPanel.add(menu, "Main Menu");
+        jPanel.add(gameScreen, "Game Screen");
+        jPanel.add(highScoreScreen, "High Scores");
+        jPanel.add(helpScreen, "About");
+        win.getContentPane().add(jPanel);
     }
 
     public void run() {
-        new Thread(() -> {
-            try {
-                Thread.sleep(Long.MAX_VALUE);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
         while (!exit) {
-            if (playerListener.isNew()) {
-                Game game = new Game(playerListener, gameScreen);
-                cardLayout.show(main, "Game Screen");
+            if (pListener.isNew()) {
+                Game game = new Game(pListener, gameScreen);
+                layout.show(jPanel, "Game Screen");
                 game.run();
                 int s = game.getScore();
-                if (s > scoreKeeper.getLowestScore()) {
+                if (s > highScoreKeeper.getLowestScore()) {
                     String name = JOptionPane.showInputDialog("New High Score, Please enter your name:");
-                    scoreKeeper.addScore(name, s);
-                    cardLayout.show(main, "High Scores");
-                    scoreScreen.run();
-                    cardLayout.show(main, "Main Menu");
-                    playerListener.reset();
+                    highScoreKeeper.addScore(name, s);
+                    layout.show(jPanel, "High Scores");
+                    highScoreScreen.run();
+                    layout.show(jPanel, "Main Menu");
+                    pListener.reset();
                 }
                 // start the game engine
-            } else if (playerListener.isHigh()) {
-                System.out.println("is high");
-                cardLayout.show(main, "High Scores");
-                scoreScreen.run();
-                cardLayout.show(main, "Main Menu");
-            } else if (playerListener.isExit()) {
+            } else if (pListener.isHigh()) {
+                layout.show(jPanel, "High Scores");
+                highScoreScreen.run();
+                layout.show(jPanel, "Main Menu");
+            } else if (pListener.isExit()) {
                 exit = true;
-                scoreKeeper.saveScores();
+                highScoreKeeper.saveScores();
                 System.exit(0);
-            } else if (playerListener.isAbout()) {
-                cardLayout.show(main, "About");
-                aboutScreen.run();
-                cardLayout.show(main, "Main Menu");
+            } else if (pListener.isAbout()) {
+                layout.show(jPanel, "About");
+                helpScreen.run();
+                layout.show(jPanel, "Main Menu");
             }
-            else if (playerListener.isMenu()) {
-                cardLayout.show(main, "Main Menu");
+            else if (pListener.isMenu()) {
+                layout.show(jPanel, "Main Menu");
             }
             try {
                 Thread.sleep(5);

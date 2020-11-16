@@ -8,7 +8,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GameScreen extends JComponent {
-    private static final long serialVersionUID = -8282302849760730222L;
     private Game game;
     private final Drawer drawer = new Drawer();
 

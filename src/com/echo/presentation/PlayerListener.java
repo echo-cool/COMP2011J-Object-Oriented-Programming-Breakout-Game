@@ -1,8 +1,5 @@
 package com.echo.presentation;
 
-import com.echo.model.Bonuses;
-import com.echo.model.Game;
-
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -17,40 +14,40 @@ public class PlayerListener implements KeyListener {
     private boolean newGame;
     private boolean start_again;
     @Override
-    public void keyTyped(KeyEvent e) {
-        if (e.getExtendedKeyCode() == KeyEvent.VK_H || e.getKeyChar() == 'H'  || e.getKeyChar() == 'h') {
+    public void keyTyped(KeyEvent event) {
+        if (event.getExtendedKeyCode() == KeyEvent.VK_H || event.getKeyChar() == 'H'  || event.getKeyChar() == 'h') {
             high = true;
-        } else if (e.getExtendedKeyCode() == KeyEvent.VK_X || e.getKeyChar() == 'X'  || e.getKeyChar() == 'x') {
+        } else if (event.getExtendedKeyCode() == KeyEvent.VK_X || event.getKeyChar() == 'X'  || event.getKeyChar() == 'x') {
             exit = true;
-        } else if (e.getExtendedKeyCode() == KeyEvent.VK_M || e.getKeyChar() == 'M'  || e.getKeyChar() == 'm') {
+        } else if (event.getExtendedKeyCode() == KeyEvent.VK_M || event.getKeyChar() == 'M'  || event.getKeyChar() == 'm') {
             menu = true;
-        } else if (e.getExtendedKeyCode() == KeyEvent.VK_N || e.getKeyChar() == 'N'  || e.getKeyChar() == 'n') {
+        } else if (event.getExtendedKeyCode() == KeyEvent.VK_N || event.getKeyChar() == 'N'  || event.getKeyChar() == 'n') {
             newGame = true;
-        } else if (e.getExtendedKeyCode() == KeyEvent.VK_P || e.getKeyChar() == 'P'  || e.getKeyChar() == 'p') {
+        } else if (event.getExtendedKeyCode() == KeyEvent.VK_P || event.getKeyChar() == 'P'  || event.getKeyChar() == 'p') {
             pause = true;
-        }else if (e.getExtendedKeyCode() == KeyEvent.VK_A || e.getKeyChar() == 'A'  || e.getKeyChar() == 'a') {
+        }else if (event.getExtendedKeyCode() == KeyEvent.VK_A || event.getKeyChar() == 'A'  || event.getKeyChar() == 'a') {
             about = true;
-        }else if (e.getExtendedKeyCode() == KeyEvent.VK_SPACE){
+        }else if (event.getExtendedKeyCode() == KeyEvent.VK_SPACE){
             start_again = true;
             //Game.laser.setActivate(true);
         }
     }
 
     @Override
-    public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+    public void keyPressed(KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.VK_LEFT) {
             left = true;
-        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+        } else if (event.getKeyCode() == KeyEvent.VK_RIGHT) {
             right = true;
         }
 
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+    public void keyReleased(KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.VK_LEFT) {
             left = false;
-        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+        } else if (event.getKeyCode() == KeyEvent.VK_RIGHT) {
             right = false;
         }
 
